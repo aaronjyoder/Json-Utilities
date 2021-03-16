@@ -24,19 +24,19 @@ public final class MoshiUtil {
       .add(new UUIDAdapter())
       .add(new PointAdapter());
 
-  public static void register(MoshiRuntimeTypeJsonAdapterFactory... factories) {
-    for (MoshiRuntimeTypeJsonAdapterFactory factory : factories) {
+  public static void register(MoshiRuntimeTypeAdapterFactory... factories) {
+    for (MoshiRuntimeTypeAdapterFactory factory : factories) {
       jsonAdapterBuilder.add(factory);
     }
   }
 
-  private static Moshi jsonAdapter(MoshiRuntimeTypeJsonAdapterFactory... factories) {
+  private static Moshi jsonAdapter(MoshiRuntimeTypeAdapterFactory... factories) {
     Moshi.Builder builder = new Moshi.Builder()
         .add(new InstantAdapter())
         .add(new UUIDAdapter())
         .add(new PointAdapter());
 
-    for (MoshiRuntimeTypeJsonAdapterFactory factory : factories) {
+    for (MoshiRuntimeTypeAdapterFactory factory : factories) {
       builder.add(factory);
     }
 

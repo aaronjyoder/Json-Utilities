@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.Nullable;
 
-public final class MoshiRuntimeTypeJsonAdapterFactory implements JsonAdapter.Factory {
+public final class MoshiRuntimeTypeAdapterFactory implements JsonAdapter.Factory {
 
   private static final String DEFAULT_CLASS_NAME_PROPERTY = "type";
 
@@ -26,24 +26,24 @@ public final class MoshiRuntimeTypeJsonAdapterFactory implements JsonAdapter.Fac
   private final Map<String, Class<?>> classNameToClass = new HashMap<>();
   private final Map<Class<?>, String> classToClassName = new HashMap<>();
 
-  private MoshiRuntimeTypeJsonAdapterFactory(final Class<?> baseClass, final String classNameProperty) {
+  private MoshiRuntimeTypeAdapterFactory(final Class<?> baseClass, final String classNameProperty) {
     this.baseClass = baseClass;
     this.classNameProperty = classNameProperty;
   }
 
-  public static MoshiRuntimeTypeJsonAdapterFactory of(final Class<?> expectedClass) {
-    return new MoshiRuntimeTypeJsonAdapterFactory(expectedClass, DEFAULT_CLASS_NAME_PROPERTY);
+  public static MoshiRuntimeTypeAdapterFactory of(final Class<?> expectedClass) {
+    return new MoshiRuntimeTypeAdapterFactory(expectedClass, DEFAULT_CLASS_NAME_PROPERTY);
   }
 
-  public static MoshiRuntimeTypeJsonAdapterFactory of(final Class<?> expectedClass, final String classNameProperty) {
-    return new MoshiRuntimeTypeJsonAdapterFactory(expectedClass, classNameProperty);
+  public static MoshiRuntimeTypeAdapterFactory of(final Class<?> expectedClass, final String classNameProperty) {
+    return new MoshiRuntimeTypeAdapterFactory(expectedClass, classNameProperty);
   }
 
-  public MoshiRuntimeTypeJsonAdapterFactory with(final Class<?> concreteClass) {
+  public MoshiRuntimeTypeAdapterFactory with(final Class<?> concreteClass) {
     return with(concreteClass, concreteClass.getSimpleName());
   }
 
-  public MoshiRuntimeTypeJsonAdapterFactory with(final Class<?> concreteClass, final String className)
+  public MoshiRuntimeTypeAdapterFactory with(final Class<?> concreteClass, final String className)
       throws IllegalArgumentException {
     if (classNameToClass.containsKey(className)) {
       throw new IllegalArgumentException(className + " is already registered for " + concreteClass);
@@ -71,7 +71,7 @@ public final class MoshiRuntimeTypeJsonAdapterFactory implements JsonAdapter.Fac
         .build(new CacheLoader<Class<?>, JsonAdapter<Object>>() {
           @Override
           public JsonAdapter<Object> load(final Class<?> clazz) {
-            return moshi.nextAdapter(MoshiRuntimeTypeJsonAdapterFactory.this, clazz, ImmutableSet.copyOf(clazz.getAnnotations()));
+            return moshi.nextAdapter(MoshiRuntimeTypeAdapterFactory.this, clazz, ImmutableSet.copyOf(clazz.getAnnotations()));
           }
         });
     return new JsonAdapter<Object>() {

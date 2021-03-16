@@ -29,8 +29,8 @@ public final class GsonUtil {
       .registerTypeAdapter(Point.class, new PointAdapter())
       .setPrettyPrinting();
 
-  public static void register(RuntimeTypeAdapterFactory<?>... factories) {
-    for (RuntimeTypeAdapterFactory<?> factory : factories) {
+  public static void register(GsonRuntimeTypeAdapterFactory<?>... factories) {
+    for (GsonRuntimeTypeAdapterFactory<?> factory : factories) {
       jsonAdapterBuilder.registerTypeAdapterFactory(factory);
     }
   }

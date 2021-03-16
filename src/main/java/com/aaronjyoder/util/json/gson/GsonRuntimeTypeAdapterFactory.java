@@ -126,7 +126,7 @@ import java.util.Map;
  *   Shape shape = gson.fromJson(json, Shape.class);
  * }</pre>
  */
-public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
+public final class GsonRuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
 
   private final Class<?> baseType;
   private final String typeFieldName;
@@ -134,7 +134,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
   private final Map<Class<?>, String> subtypeToLabel = new LinkedHashMap<Class<?>, String>();
   private final boolean maintainType;
 
-  private RuntimeTypeAdapterFactory(Class<?> baseType, String typeFieldName, boolean maintainType) {
+  private GsonRuntimeTypeAdapterFactory(Class<?> baseType, String typeFieldName, boolean maintainType) {
     if (typeFieldName == null || baseType == null) {
       throw new NullPointerException();
     }
@@ -147,22 +147,22 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
    * Creates a new runtime type adapter using for {@code baseType} using {@code typeFieldName} as the type field name. Type field names are case sensitive. {@code maintainType}
    * flag decide if the type will be stored in pojo or not.
    */
-  public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName, boolean maintainType) {
-    return new RuntimeTypeAdapterFactory<T>(baseType, typeFieldName, maintainType);
+  public static <T> GsonRuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName, boolean maintainType) {
+    return new GsonRuntimeTypeAdapterFactory<T>(baseType, typeFieldName, maintainType);
   }
 
   /**
    * Creates a new runtime type adapter using for {@code baseType} using {@code typeFieldName} as the type field name. Type field names are case sensitive.
    */
-  public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName) {
-    return new RuntimeTypeAdapterFactory<T>(baseType, typeFieldName, false);
+  public static <T> GsonRuntimeTypeAdapterFactory<T> of(Class<T> baseType, String typeFieldName) {
+    return new GsonRuntimeTypeAdapterFactory<T>(baseType, typeFieldName, false);
   }
 
   /**
    * Creates a new runtime type adapter for {@code baseType} using {@code "type"} as the type field name.
    */
-  public static <T> RuntimeTypeAdapterFactory<T> of(Class<T> baseType) {
-    return new RuntimeTypeAdapterFactory<T>(baseType, "type", false);
+  public static <T> GsonRuntimeTypeAdapterFactory<T> of(Class<T> baseType) {
+    return new GsonRuntimeTypeAdapterFactory<T>(baseType, "type", false);
   }
 
   /**
@@ -170,7 +170,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
    *
    * @throws IllegalArgumentException if either {@code type} or {@code label} have already been registered on this type adapter.
    */
-  public RuntimeTypeAdapterFactory<T> with(Class<? extends T> type, String label) {
+  public GsonRuntimeTypeAdapterFactory<T> with(Class<? extends T> type, String label) {
     if (type == null || label == null) {
       throw new NullPointerException();
     }
@@ -187,7 +187,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
    *
    * @throws IllegalArgumentException if either {@code type} or its simple name have already been registered on this type adapter.
    */
-  public RuntimeTypeAdapterFactory<T> with(Class<? extends T> type) {
+  public GsonRuntimeTypeAdapterFactory<T> with(Class<? extends T> type) {
     return with(type, type.getSimpleName());
   }
 
