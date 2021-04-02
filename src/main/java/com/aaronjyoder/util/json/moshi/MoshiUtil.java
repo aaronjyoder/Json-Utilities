@@ -2,6 +2,7 @@ package com.aaronjyoder.util.json.moshi;
 
 import com.aaronjyoder.util.json.adapters.InstantAdapter;
 import com.aaronjyoder.util.json.adapters.PointAdapter;
+import com.aaronjyoder.util.json.adapters.RuntimeTypeAdapterFactory;
 import com.aaronjyoder.util.json.adapters.UUIDAdapter;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -20,23 +21,24 @@ public final class MoshiUtil {
   }
 
   private static final Moshi.Builder jsonAdapterBuilder = new Moshi.Builder()
+      .add(new RecordsJsonAdapterFactory()) // TODO: Temporary until Moshi adds Record support
       .add(new InstantAdapter())
       .add(new UUIDAdapter())
       .add(new PointAdapter());
 
-  public static void register(MoshiRuntimeTypeAdapterFactory... factories) {
-    for (MoshiRuntimeTypeAdapterFactory factory : factories) {
+  public static void register(RuntimeTypeAdapterFactory<?>... factories) {
+    for (RuntimeTypeAdapterFactory<?> factory : factories) {
       jsonAdapterBuilder.add(factory);
     }
   }
 
-  private static Moshi jsonAdapter(MoshiRuntimeTypeAdapterFactory... factories) {
+  private static Moshi jsonAdapter(RuntimeTypeAdapterFactory<?>... factories) {
     Moshi.Builder builder = new Moshi.Builder()
         .add(new InstantAdapter())
         .add(new UUIDAdapter())
         .add(new PointAdapter());
 
-    for (MoshiRuntimeTypeAdapterFactory factory : factories) {
+    for (RuntimeTypeAdapterFactory<?> factory : factories) {
       builder.add(factory);
     }
 
@@ -47,7 +49,7 @@ public final class MoshiUtil {
     if (file.exists()) {
       return Files.readString(file.toPath());
     }
-    return "";
+    return "{}";
   }
 
   // Read

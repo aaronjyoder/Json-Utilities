@@ -1,21 +1,26 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'java'
+    id 'java-library'
 }
 
 group 'com.aaronjyoder'
 version '1.0'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
+}
+
 jar {
     from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-        (configurations.runtime).collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {

@@ -2,6 +2,7 @@ package com.aaronjyoder.util.json.gson;
 
 import com.aaronjyoder.util.json.adapters.InstantAdapter;
 import com.aaronjyoder.util.json.adapters.PointAdapter;
+import com.aaronjyoder.util.json.adapters.RuntimeTypeAdapterFactory;
 import com.aaronjyoder.util.json.adapters.UUIDAdapter;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -29,8 +30,8 @@ public final class GsonUtil {
       .registerTypeAdapter(Point.class, new PointAdapter())
       .setPrettyPrinting();
 
-  public static void register(GsonRuntimeTypeAdapterFactory<?>... factories) {
-    for (GsonRuntimeTypeAdapterFactory<?> factory : factories) {
+  public static void register(RuntimeTypeAdapterFactory<?>... factories) {
+    for (RuntimeTypeAdapterFactory<?> factory : factories) {
       jsonAdapterBuilder.registerTypeAdapterFactory(factory);
     }
   }
