@@ -1,10 +1,11 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java-library'
+    id 'maven-publish'
 }
 
 group 'com.aaronjyoder'
-version '1.0.0~jdk15'
+version '1.0.0a15'
 
 java {
     toolchain {
