@@ -1,11 +1,9 @@
-package com.aaronjyoder.util.json.moshi;
+package com.aaronjyoder.util.json.jackson;
 
-import com.aaronjyoder.util.json.adapters.InstantAdapter;
-import com.aaronjyoder.util.json.adapters.PointAdapter;
-import com.aaronjyoder.util.json.adapters.RuntimeTypeAdapterFactory;
-import com.aaronjyoder.util.json.adapters.UUIDAdapter;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
+import com.fasterxml.jackson.databind.ObjectMapper.DefaultTyping;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,40 +13,27 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public final class MoshiUtil {
+public final class JacksonUtil {
 
-  private MoshiUtil() {
+  private static JsonMapper.Builder jsonAdapterBuilder = JsonMapper.builder().addModule(new JavaTimeModule());
+
+  private JacksonUtil() {
   }
 
-  private static final Moshi.Builder jsonAdapterBuilder = new Moshi.Builder()
-      .add(new InstantAdapter())
-      .add(new UUIDAdapter())
-      .add(new PointAdapter());
-
-  public static void register(RuntimeTypeAdapterFactory<?>... factories) {
-    for (RuntimeTypeAdapterFactory<?> factory : factories) {
-      jsonAdapterBuilder.add(factory);
+  public static void registerIfBaseType(final Class<?>... baseClasses) {
+    var builder = BasicPolymorphicTypeValidator.builder();
+    for (Class<?> baseClass : baseClasses) {
+      builder.allowIfBaseType(baseClass);
     }
+    jsonAdapterBuilder = jsonAdapterBuilder.activateDefaultTypingAsProperty(builder.build(), DefaultTyping.NON_FINAL, "type");
   }
 
-  private static Moshi jsonAdapter(RuntimeTypeAdapterFactory<?>... factories) {
-    Moshi.Builder builder = new Moshi.Builder()
-        .add(new InstantAdapter())
-        .add(new UUIDAdapter())
-        .add(new PointAdapter());
-
-    for (RuntimeTypeAdapterFactory<?> factory : factories) {
-      builder.add(factory);
+  public static void registerIfSubType(final Class<?>... subClasses) {
+    var builder = BasicPolymorphicTypeValidator.builder();
+    for (Class<?> subClass : subClasses) {
+      builder.allowIfSubType(subClass);
     }
-
-    return builder.build();
-  }
-
-  private static String fileToString(File file) throws IOException {
-    if (file.exists()) {
-      return Files.readString(file.toPath());
-    }
-    return "{}";
+    jsonAdapterBuilder = jsonAdapterBuilder.activateDefaultTypingAsProperty(builder.build(), DefaultTyping.NON_FINAL, "type");
   }
 
   // Read
@@ -57,8 +42,7 @@ public final class MoshiUtil {
     File fileToRead = new File(file);
     if (fileToRead.exists()) {
       try {
-        JsonAdapter<T> jsonAdapter = jsonAdapter().adapter(clazz);
-        return jsonAdapter.fromJson(fileToString(fileToRead));
+        return jsonAdapterBuilder.build().readValue(fileToRead, clazz);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -70,8 +54,7 @@ public final class MoshiUtil {
     File fileToRead = new File(file);
     if (fileToRead.exists()) {
       try {
-        JsonAdapter<T> jsonAdapter = jsonAdapter().adapter(type);
-        return jsonAdapter.fromJson(fileToString(fileToRead));
+        return jsonAdapterBuilder.build().readValue(fileToRead, jsonAdapterBuilder.build().constructType(type));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -84,7 +67,7 @@ public final class MoshiUtil {
   public static <T> void write(String file, Class<T> clazz, T object) {
     try {
       Writer writer = new FileWriter(file, StandardCharsets.UTF_8);
-      writer.write(jsonAdapter().adapter(clazz).indent("  ").toJson(object));
+      writer.write(jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object));
       writer.close();
     } catch (IOException e) {
       e.printStackTrace();
@@ -94,7 +77,7 @@ public final class MoshiUtil {
   public static <T> void write(String file, Type type, T object) {
     try {
       Writer writer = new FileWriter(file, StandardCharsets.UTF_8);
-      writer.write(jsonAdapter().adapter(type).indent("  ").toJson(object));
+      writer.write(jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object));
       writer.close();
     } catch (IOException e) {
       e.printStackTrace();
@@ -107,7 +90,7 @@ public final class MoshiUtil {
     try {
       Files.createDirectories(Paths.get(directory));
       Writer writer = new FileWriter(directory + fileName, StandardCharsets.UTF_8);
-      writer.write(jsonAdapter().adapter(clazz).indent("  ").toJson(object));
+      writer.write(jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object));
       writer.close();
     } catch (IOException e) {
       e.printStackTrace();
@@ -118,11 +101,12 @@ public final class MoshiUtil {
     try {
       Files.createDirectories(Paths.get(directory));
       Writer writer = new FileWriter(directory + fileName, StandardCharsets.UTF_8);
-      writer.write(jsonAdapter().adapter(type).indent("  ").toJson(object));
+      writer.write(jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object));
       writer.close();
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
+
 
 }
