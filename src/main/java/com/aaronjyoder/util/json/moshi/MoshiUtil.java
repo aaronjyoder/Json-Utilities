@@ -21,7 +21,6 @@ public final class MoshiUtil {
   }
 
   private static final Moshi.Builder jsonAdapterBuilder = new Moshi.Builder()
-      .add(new RecordsJsonAdapterFactory())
       .add(new InstantAdapter())
       .add(new UUIDAdapter())
       .add(new PointAdapter());

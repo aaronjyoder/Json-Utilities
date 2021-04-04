@@ -173,9 +173,10 @@ public class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory, JsonAda
   @Nullable
   @Override
   public JsonAdapter<?> create(final Type type, final Set<? extends Annotation> annotations, final Moshi moshi) {
-    if (!(type instanceof final Class<?> typeAsClass)) {
+    if (!(type instanceof Class)) {
       return null;
     }
+    final Class<?> typeAsClass = (Class<?>) type;
     if (!baseClass.isAssignableFrom(typeAsClass)) {
       return null;
     }
