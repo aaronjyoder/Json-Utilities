@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'com.aaronjyoder'
+group 'com.github.aaronjyoder'
 version '1.0.0a15'
 
 java {
