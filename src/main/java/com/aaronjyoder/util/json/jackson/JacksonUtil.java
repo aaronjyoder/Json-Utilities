@@ -13,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class JacksonUtil {
 
@@ -39,14 +41,16 @@ public final class JacksonUtil {
 
   // Read
 
-  public static <T> T read(Path path, Class<T> type) throws IOException {
+  @Nullable
+  public static <T> T read(@Nonnull Path path, @Nonnull Class<T> type) throws IOException {
     if (Files.isRegularFile(path) && Files.isReadable(path)) {
       return jsonAdapterBuilder.build().readValue(Files.newBufferedReader(path), type);
     }
     return null;
   }
 
-  public static <T> T read(Path path, Type type) throws IOException {
+  @Nullable
+  public static <T> T read(@Nonnull Path path, @Nonnull Type type) throws IOException {
     if (Files.isRegularFile(path) && Files.isReadable(path)) {
       return jsonAdapterBuilder.build().readValue(Files.newBufferedReader(path), jsonAdapterBuilder.build().constructType(type));
     }
@@ -81,12 +85,12 @@ public final class JacksonUtil {
 
   // Write
 
-  public static <T> void write(Path path, Class<T> type, T object) throws IOException {
+  public static <T> void write(@Nonnull Path path, @Nonnull Class<T> type, @Nonnull T object) throws IOException {
     Files.createDirectories(path.getParent());
     Files.writeString(path, jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object), StandardCharsets.UTF_8);
   }
 
-  public static <T> void write(Path path, Type type, T object) throws IOException {
+  public static <T> void write(@Nonnull Path path, @Nonnull Type type, @Nonnull T object) throws IOException {
     Files.createDirectories(path.getParent());
     Files.writeString(path, jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object), StandardCharsets.UTF_8);
   }

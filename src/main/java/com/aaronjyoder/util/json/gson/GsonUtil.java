@@ -19,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class GsonUtil {
 
@@ -39,7 +41,8 @@ public final class GsonUtil {
 
   // Read
 
-  public static <T> T read(Path path, Class<T> type) throws IOException {
+  @Nullable
+  public static <T> T read(@Nonnull Path path, @Nonnull Class<T> type) throws IOException {
     if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonReader jReader = new JsonReader(Files.newBufferedReader(path, StandardCharsets.UTF_8));
       return jsonAdapterBuilder.create().fromJson(jReader, type);
@@ -47,7 +50,8 @@ public final class GsonUtil {
     return null;
   }
 
-  public static <T> T read(Path path, Type type) throws IOException {
+  @Nullable
+  public static <T> T read(@Nonnull Path path, @Nonnull Type type) throws IOException {
     if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonReader jReader = new JsonReader(Files.newBufferedReader(path, StandardCharsets.UTF_8));
       return jsonAdapterBuilder.create().fromJson(jReader, type);
@@ -83,12 +87,12 @@ public final class GsonUtil {
 
   // Write
 
-  public static <T> void write(Path path, Class<T> type, T object) throws IOException {
+  public static <T> void write(@Nonnull Path path, @Nonnull Class<T> type, @Nonnull T object) throws IOException {
     Files.createDirectories(path.getParent());
     Files.writeString(path, jsonAdapterBuilder.create().toJson(object, type), StandardCharsets.UTF_8);
   }
 
-  public static <T> void write(Path path, Type type, T object) throws IOException {
+  public static <T> void write(@Nonnull Path path, @Nonnull Type type, @Nonnull T object) throws IOException {
     Files.createDirectories(path.getParent());
     Files.writeString(path, jsonAdapterBuilder.create().toJson(object, type), StandardCharsets.UTF_8);
   }

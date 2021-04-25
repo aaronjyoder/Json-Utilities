@@ -15,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class MoshiUtil {
 
@@ -55,7 +57,8 @@ public final class MoshiUtil {
 
   // Read
 
-  public static <T> T read(Path path, Class<T> type) throws IOException {
+  @Nullable
+  public static <T> T read(@Nonnull Path path, @Nonnull Class<T> type) throws IOException {
     if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonAdapter<T> jsonAdapter = jsonAdapter().adapter(type);
       return jsonAdapter.fromJson(Files.readString(path));
@@ -63,7 +66,8 @@ public final class MoshiUtil {
     return null;
   }
 
-  public static <T> T read(Path path, Type type) throws IOException {
+  @Nullable
+  public static <T> T read(@Nonnull Path path, @Nonnull Type type) throws IOException {
     if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonAdapter<T> jsonAdapter = jsonAdapter().adapter(type);
       return jsonAdapter.fromJson(Files.readString(path));
@@ -101,12 +105,12 @@ public final class MoshiUtil {
 
   // Write
 
-  public static <T> void write(Path path, Class<T> type, T object) throws IOException {
+  public static <T> void write(@Nonnull Path path, @Nonnull Class<T> type, @Nonnull T object) throws IOException {
     Files.createDirectories(path.getParent());
     Files.writeString(path, jsonAdapter().adapter(type).indent("  ").toJson(object), StandardCharsets.UTF_8);
   }
 
-  public static <T> void write(Path path, Type type, T object) throws IOException {
+  public static <T> void write(@Nonnull Path path, @Nonnull Type type, @Nonnull T object) throws IOException {
     Files.createDirectories(path.getParent());
     Files.writeString(path, jsonAdapter().adapter(type).indent("  ").toJson(object), StandardCharsets.UTF_8);
   }
