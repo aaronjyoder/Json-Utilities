@@ -1,11 +1,26 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java-library'
-    id 'maven'
+    id 'maven-publish'
 }
 
 group 'com.github.aaronjyoder'
-version '1.0.0a15'
+version '1.1.0'
+
+publishing {
+    publications {
+        myLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'json-utilities'
+            url = "file://${buildDir}/repo"
+        }
+    }
+}
 
 java {
     toolchain {

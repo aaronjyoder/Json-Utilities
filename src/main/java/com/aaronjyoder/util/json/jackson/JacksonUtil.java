@@ -11,6 +11,7 @@ import java.io.Writer;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class JacksonUtil {
@@ -38,11 +39,26 @@ public final class JacksonUtil {
 
   // Read
 
-  public static <T> T read(String file, Class<T> clazz) {
+  public static <T> T read(Path path, Class<T> type) throws IOException {
+    if (Files.exists(path) && Files.isReadable(path) && Files.isRegularFile(path)) {
+      return jsonAdapterBuilder.build().readValue(Files.newBufferedReader(path), type);
+    }
+    return null;
+  }
+
+  public static <T> T read(Path path, Type type) throws IOException {
+    if (Files.exists(path) && Files.isReadable(path) && Files.isRegularFile(path)) {
+      return jsonAdapterBuilder.build().readValue(Files.newBufferedReader(path), jsonAdapterBuilder.build().constructType(type));
+    }
+    return null;
+  }
+
+  @Deprecated
+  public static <T> T read(String file, Class<T> type) {
     File fileToRead = new File(file);
     if (fileToRead.exists()) {
       try {
-        return jsonAdapterBuilder.build().readValue(fileToRead, clazz);
+        return jsonAdapterBuilder.build().readValue(fileToRead, type);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -50,6 +66,7 @@ public final class JacksonUtil {
     return null;
   }
 
+  @Deprecated
   public static <T> T read(String file, Type type) {
     File fileToRead = new File(file);
     if (fileToRead.exists()) {
@@ -64,7 +81,26 @@ public final class JacksonUtil {
 
   // Write
 
-  public static <T> void write(String file, Class<T> clazz, T object) {
+  public static <T> boolean write(Path path, Class<T> type, T object) throws IOException {
+    if (Files.isRegularFile(path) && Files.isWritable(path)) {
+      Files.createDirectories(path.getParent());
+      Files.writeString(path, jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object), StandardCharsets.UTF_8);
+      return true;
+    }
+    return false;
+  }
+
+  public static <T> boolean write(Path path, Type type, T object) throws IOException {
+    if (Files.isRegularFile(path) && Files.isWritable(path)) {
+      Files.createDirectories(path.getParent());
+      Files.writeString(path, jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object), StandardCharsets.UTF_8);
+      return true;
+    }
+    return false;
+  }
+
+  @Deprecated
+  public static <T> void write(String file, Class<T> type, T object) {
     try {
       Writer writer = new FileWriter(file, StandardCharsets.UTF_8);
       writer.write(jsonAdapterBuilder.build().writerWithDefaultPrettyPrinter().writeValueAsString(object));
@@ -74,6 +110,7 @@ public final class JacksonUtil {
     }
   }
 
+  @Deprecated
   public static <T> void write(String file, Type type, T object) {
     try {
       Writer writer = new FileWriter(file, StandardCharsets.UTF_8);
@@ -86,7 +123,8 @@ public final class JacksonUtil {
 
   // Write with basic directory creation
 
-  public static <T> void write(String directory, String fileName, Class<T> clazz, T object) {
+  @Deprecated
+  public static <T> void write(String directory, String fileName, Class<T> type, T object) {
     try {
       Files.createDirectories(Paths.get(directory));
       Writer writer = new FileWriter(directory + fileName, StandardCharsets.UTF_8);
@@ -97,6 +135,7 @@ public final class JacksonUtil {
     }
   }
 
+  @Deprecated
   public static <T> void write(String directory, String fileName, Type type, T object) {
     try {
       Files.createDirectories(Paths.get(directory));
