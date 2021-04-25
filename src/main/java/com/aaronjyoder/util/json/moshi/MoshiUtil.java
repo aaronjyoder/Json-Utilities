@@ -56,7 +56,7 @@ public final class MoshiUtil {
   // Read
 
   public static <T> T read(Path path, Class<T> type) throws IOException {
-    if (Files.exists(path) && Files.isReadable(path) && Files.isRegularFile(path)) {
+    if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonAdapter<T> jsonAdapter = jsonAdapter().adapter(type);
       return jsonAdapter.fromJson(Files.readString(path));
     }
@@ -64,7 +64,7 @@ public final class MoshiUtil {
   }
 
   public static <T> T read(Path path, Type type) throws IOException {
-    if (Files.exists(path) && Files.isReadable(path) && Files.isRegularFile(path)) {
+    if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonAdapter<T> jsonAdapter = jsonAdapter().adapter(type);
       return jsonAdapter.fromJson(Files.readString(path));
     }
@@ -101,22 +101,14 @@ public final class MoshiUtil {
 
   // Write
 
-  public static <T> boolean write(Path path, Class<T> type, T object) throws IOException {
-    if (Files.isRegularFile(path) && Files.isWritable(path)) {
-      Files.createDirectories(path.getParent());
-      Files.writeString(path, jsonAdapter().adapter(type).indent("  ").toJson(object), StandardCharsets.UTF_8);
-      return true;
-    }
-    return false;
+  public static <T> void write(Path path, Class<T> type, T object) throws IOException {
+    Files.createDirectories(path.getParent());
+    Files.writeString(path, jsonAdapter().adapter(type).indent("  ").toJson(object), StandardCharsets.UTF_8);
   }
 
-  public static <T> boolean write(Path path, Type type, T object) throws IOException {
-    if (Files.isRegularFile(path) && Files.isWritable(path)) {
-      Files.createDirectories(path.getParent());
-      Files.writeString(path, jsonAdapter().adapter(type).indent("  ").toJson(object), StandardCharsets.UTF_8);
-      return true;
-    }
-    return false;
+  public static <T> void write(Path path, Type type, T object) throws IOException {
+    Files.createDirectories(path.getParent());
+    Files.writeString(path, jsonAdapter().adapter(type).indent("  ").toJson(object), StandardCharsets.UTF_8);
   }
 
   @Deprecated

@@ -40,7 +40,7 @@ public final class GsonUtil {
   // Read
 
   public static <T> T read(Path path, Class<T> type) throws IOException {
-    if (Files.exists(path) && Files.isReadable(path) && Files.isRegularFile(path)) {
+    if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonReader jReader = new JsonReader(Files.newBufferedReader(path, StandardCharsets.UTF_8));
       return jsonAdapterBuilder.create().fromJson(jReader, type);
     }
@@ -48,7 +48,7 @@ public final class GsonUtil {
   }
 
   public static <T> T read(Path path, Type type) throws IOException {
-    if (Files.exists(path) && Files.isReadable(path) && Files.isRegularFile(path)) {
+    if (Files.isRegularFile(path) && Files.isReadable(path)) {
       JsonReader jReader = new JsonReader(Files.newBufferedReader(path, StandardCharsets.UTF_8));
       return jsonAdapterBuilder.create().fromJson(jReader, type);
     }
@@ -83,22 +83,14 @@ public final class GsonUtil {
 
   // Write
 
-  public static <T> boolean write(Path path, Class<T> type, T object) throws IOException {
-    if (Files.isRegularFile(path) && Files.isWritable(path)) {
-      Files.createDirectories(path.getParent());
-      Files.writeString(path, jsonAdapterBuilder.create().toJson(object, type), StandardCharsets.UTF_8);
-      return true;
-    }
-    return false;
+  public static <T> void write(Path path, Class<T> type, T object) throws IOException {
+    Files.createDirectories(path.getParent());
+    Files.writeString(path, jsonAdapterBuilder.create().toJson(object, type), StandardCharsets.UTF_8);
   }
 
-  public static <T> boolean write(Path path, Type type, T object) throws IOException {
-    if (Files.isRegularFile(path) && Files.isWritable(path)) {
-      Files.createDirectories(path.getParent());
-      Files.writeString(path, jsonAdapterBuilder.create().toJson(object, type), StandardCharsets.UTF_8);
-      return true;
-    }
-    return false;
+  public static <T> void write(Path path, Type type, T object) throws IOException {
+    Files.createDirectories(path.getParent());
+    Files.writeString(path, jsonAdapterBuilder.create().toJson(object, type), StandardCharsets.UTF_8);
   }
 
   @Deprecated
