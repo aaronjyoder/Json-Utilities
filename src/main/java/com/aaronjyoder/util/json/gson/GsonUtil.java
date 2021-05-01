@@ -1,11 +1,13 @@
 package com.aaronjyoder.util.json.gson;
 
+import com.aaronjyoder.util.json.adapters.ColorAdapter;
 import com.aaronjyoder.util.json.adapters.InstantAdapter;
 import com.aaronjyoder.util.json.adapters.PointAdapter;
 import com.aaronjyoder.util.json.adapters.RuntimeTypeAdapterFactory;
 import com.aaronjyoder.util.json.adapters.UUIDAdapter;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileReader;
@@ -31,6 +33,7 @@ public final class GsonUtil {
       .registerTypeAdapter(Instant.class, new InstantAdapter())
       .registerTypeAdapter(UUID.class, new UUIDAdapter())
       .registerTypeAdapter(Point.class, new PointAdapter())
+      .registerTypeAdapter(Color.class, new ColorAdapter())
       .setPrettyPrinting();
 
   public static void register(RuntimeTypeAdapterFactory<?>... factories) {

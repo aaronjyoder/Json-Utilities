@@ -1,5 +1,6 @@
 package com.aaronjyoder.util.json.moshi;
 
+import com.aaronjyoder.util.json.adapters.ColorAdapter;
 import com.aaronjyoder.util.json.adapters.InstantAdapter;
 import com.aaronjyoder.util.json.adapters.PointAdapter;
 import com.aaronjyoder.util.json.adapters.RuntimeTypeAdapterFactory;
@@ -26,7 +27,8 @@ public final class MoshiUtil {
   private static final Moshi.Builder jsonAdapterBuilder = new Moshi.Builder()
       .add(new InstantAdapter())
       .add(new UUIDAdapter())
-      .add(new PointAdapter());
+      .add(new PointAdapter())
+      .add(new ColorAdapter());
 
   public static void register(RuntimeTypeAdapterFactory<?>... factories) {
     for (RuntimeTypeAdapterFactory<?> factory : factories) {
@@ -38,7 +40,8 @@ public final class MoshiUtil {
     Moshi.Builder builder = new Moshi.Builder()
         .add(new InstantAdapter())
         .add(new UUIDAdapter())
-        .add(new PointAdapter());
+        .add(new PointAdapter())
+        .add(new ColorAdapter());
 
     for (RuntimeTypeAdapterFactory<?> factory : factories) {
       builder.add(factory);
