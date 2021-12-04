@@ -7,6 +7,7 @@ import com.aaronjyoder.util.json.adapters.RuntimeTypeAdapterFactory;
 import com.aaronjyoder.util.json.adapters.UUIDAdapter;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+import dev.zacsweers.moshix.records.RecordsJsonAdapterFactory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,6 +26,7 @@ public final class MoshiUtil {
   }
 
   private static final Moshi.Builder jsonAdapterBuilder = new Moshi.Builder()
+      .add(new RecordsJsonAdapterFactory())
       .add(new InstantAdapter())
       .add(new UUIDAdapter())
       .add(new PointAdapter())
@@ -38,6 +40,7 @@ public final class MoshiUtil {
 
   private static Moshi jsonAdapter(RuntimeTypeAdapterFactory<?>... factories) {
     Moshi.Builder builder = new Moshi.Builder()
+        .add(new RecordsJsonAdapterFactory())
         .add(new InstantAdapter())
         .add(new UUIDAdapter())
         .add(new PointAdapter())
